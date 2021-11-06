@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <vector>
+#include <stack>
 
 #include "PrimitivePainter.hpp"
 #include "Rule.hpp"
@@ -38,13 +39,8 @@ public:
             case Rule::Forward:
                 DoProductionRule(iterationCount);
                 break;
-            case Rule::Plus:
-                angle += theta;
-                break;
-            case Rule::Minus:
-                angle -= theta;
-                break;
             default:
+                ParseSecondaryRule(initiatingRule);
                 break;
             }
         }
@@ -53,8 +49,8 @@ public:
     }
 private:
     inline void DoProductionRule(size_t iterationCount) noexcept {
-        for (auto const &produtcionRule : productionRules) {
-            switch (produtcionRule)
+        for (auto const &productionRule : productionRules) {
+            switch (productionRule)
             {
             case Rule::Forward:
                 if (iterationCount == 0) {
@@ -71,15 +67,34 @@ private:
                 DoProductionRule(iterationCount - 1);
 
                 break;
-            case Rule::Plus:
-                angle += theta;
-                break;
-            case Rule::Minus:
-                angle -= theta;
-                break;
             default:
+                ParseSecondaryRule(productionRule);
                 break;
             }
+        }
+    }
+
+    inline void ParseSecondaryRule(Rule const &rule) noexcept {
+        switch (rule)
+        {
+        case Rule::Plus:
+            angle += theta;
+            break;
+        case Rule::Minus:
+            angle -= theta;
+            break;
+        case Rule::Save:
+            savedPositions.push(position);
+            savedAngles.push(angle);
+            break;
+        case Rule::Restore:
+            position = savedPositions.top();
+            angle = savedAngles.top();
+
+            savedPositions.pop();
+            savedAngles.pop();
+        default:
+            break;
         }
     }
 
@@ -102,6 +117,9 @@ private:
     PrimitivePainter painter;
     
     Point2D position = { 0, 0 };
+
+    std::stack<Point2D> savedPositions;
+    std::stack<double> savedAngles;
 
     constexpr static double xMax = 1.0, xMin = -1.0, yMax = 1.0, yMin = -1.0;
 };

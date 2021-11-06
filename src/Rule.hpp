@@ -4,7 +4,9 @@
 enum class Rule : size_t {
     Forward = 0,
     Plus,
-    Minus
+    Minus,
+    Save,
+    Restore
 };
 
 #endif

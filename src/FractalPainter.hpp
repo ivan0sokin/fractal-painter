@@ -1,14 +1,11 @@
 #ifndef _FRACTAL_PAINTER_HPP
 #define _FRACTAL_PAINTER_HPP
 
-#include <SFML/Graphics.hpp>
-
 #include <memory>
-#include <vector>
 #include <stack>
 
+#include "PatternParser.hpp"
 #include "PrimitivePainter.hpp"
-#include "Rule.hpp"
 
 class FractalPainter {
 public:
@@ -19,12 +16,14 @@ public:
     inline FractalPainter(long windowWidth, long windowHeight, double unit, double angle, double theta) noexcept : 
         windowWidth(windowWidth), windowHeight(windowHeight), unit(unit), angle(angle), theta(theta) {}
 
-    inline void SetInitiatingRule(std::initializer_list<Rule> const &rules) noexcept { 
-        initiatingRules.assign(rules);
+    inline void SetPrimaryPattern(std::string_view primaryPattern) { 
+        auto parser = PatternParser(primaryPattern);
+        initiatingRules = parser.Parse();
     }
 
-    inline void SetProducitonRule(std::initializer_list<Rule> const &rules) noexcept { 
-        productionRules.assign(rules);
+    inline void SetSecondaryPattern(std::string_view secondaryPattern) {
+        auto parser = PatternParser(secondaryPattern);
+        productionRules = parser.Parse();
     }
 
     inline void Paint(Point2D startingPosition, double startingAngle, size_t iterationCount = 1) noexcept {

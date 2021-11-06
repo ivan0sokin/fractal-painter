@@ -26,9 +26,9 @@ public:
         productionRules.assign(rules);
     }
 
-    inline void Paint(size_t iteration_count = 1) noexcept {
-        position = Point2D(windowWidth / 2, windowHeight / 2);
-        angle = 0.0;
+    inline void Paint(Point2D startingPosition, double startingAngle, size_t iterationCount = 1) noexcept {
+        position = startingPosition;
+        angle = startingAngle;
         
         glBegin(GL_LINES);
 
@@ -36,7 +36,7 @@ public:
             switch (initiatingRule)
             {
             case Rule::Forward:
-                DoProductionRule(iteration_count);
+                DoProductionRule(iterationCount);
                 break;
             case Rule::Plus:
                 angle += theta;
@@ -52,12 +52,12 @@ public:
         glEnd();
     }
 private:
-    inline void DoProductionRule(size_t iteration_count) noexcept {
+    inline void DoProductionRule(size_t iterationCount) noexcept {
         for (auto const &produtcionRule : productionRules) {
             switch (produtcionRule)
             {
             case Rule::Forward:
-                if (iteration_count == 0) {
+                if (iterationCount == 0) {
                     auto line = Line2D(position, Point2D(position.x + unit, position.y));
                     Point2D rotated = line.Rotate(angle);
 
@@ -68,7 +68,7 @@ private:
                     break;
                 }
 
-                DoProductionRule(iteration_count - 1);
+                DoProductionRule(iterationCount - 1);
 
                 break;
             case Rule::Plus:

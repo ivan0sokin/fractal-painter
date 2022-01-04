@@ -6,4 +6,4 @@ Fractal painter is a simple header-only fractal drawing library.
 #### Make sure you have included "sfml/include" directory
 
 ## License
-Fracpaintertal builder is licensed under the [Apache-2.0 License](LICENSE)
+Fractal painter is licensed under the [Apache-2.0 License](LICENSE)
